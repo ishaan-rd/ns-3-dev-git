@@ -28,29 +28,31 @@
 #include <algorithm>
 #include "ns3/core-module.h"
 #include <sys/stat.h>
+#include "../helper/aqm-list-helper.h"
 
 using namespace ns3;
 
 std::vector<std::string> AQM = {
-"PfifoFast",
-"CoDel",
-"Pie",
-"Red",
-"AdaptiveRed",
-"FengAdaptiveRed",
-"NonLinearRed"
+  "PfifoFast",
+  "CoDel",
+  "Pie",
+  "Red",
+  "AdaptiveRed",
+  "FengAdaptiveRed",
+  "NonLinearRed"
 };
+
 std::string queueDisc = "QueueDisc";
 uint32_t nAQM = 7;
 std::string AggressiveTcp = "";
 std::string QueueDiscMode = "QUEUE_DISC_MODE_PACKETS";
 std::string isBql = "false"; 
 
-void RemoveAqm (std::string aqm)
-{
-  AQM.erase (std::remove (AQM.begin (), AQM.end (), aqm), AQM.end ());
-  nAQM--;	
-}
+// void RemoveAqm (std::string aqm)
+// {
+//   AQM.erase (std::remove (AQM.begin (), AQM.end (), aqm), AQM.end ());
+//   nAQM--;	
+// }
 
 void RunOneScenario (std::string scenarioName)
 {
@@ -187,6 +189,8 @@ int main (int argc, char *argv[])
   std::string scenarioName = "";
   std::string scenarioNumber = "";
 
+  // addAQM("Fifo");
+  std::cout << "run" << nAQM << "\n";
   CommandLine cmd;
   cmd.AddValue ("number", "Scenario number from RFC", scenarioNumber);
   cmd.AddValue ("name", "Name of the scenario (eg: TCPFriendlySameInitCwnd)", scenarioName);

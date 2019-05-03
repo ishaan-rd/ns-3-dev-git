@@ -21,33 +21,36 @@
  */
 
 #include "aqm-eval-suite-helper.h"
+#include "./aqm-list-helper.h"
 
 namespace ns3 {
 
 ScenarioImpl::ScenarioImpl ()
 {
-  m_AQM = {
-    "ns3::PfifoFastQueueDisc",
-    "ns3::RedQueueDisc",
-    "ns3::AdaptiveRedQueueDisc",
-    "ns3::FengAdaptiveRedQueueDisc",
-    "ns3::NonLinearRedQueueDisc",
-    "ns3::CoDelQueueDisc",
-    "ns3::PieQueueDisc"
-  };
-  m_nAQM = 7;
+  // m_AQM = {
+  //   "ns3::PfifoFastQueueDisc",
+  //   "ns3::FifoQueueDisc",
+  //   "ns3::RedQueueDisc",
+  //   "ns3::AdaptiveRedQueueDisc",
+  //   "ns3::FengAdaptiveRedQueueDisc",
+  //   "ns3::NonLinearRedQueueDisc",
+  //   "ns3::CoDelQueueDisc",
+  //   "ns3::PieQueueDisc"
+  // };
+  // m_nAQM = 8;
+
 }
 
 ScenarioImpl::~ScenarioImpl ()
 {
 }
 
-void
-ScenarioImpl::addAQM (std::string aqm)
-{
-  m_AQM.push_back (aqm);
-  m_nAQM++;
-}
+// void
+// ScenarioImpl::addAQM (std::string aqm)
+// {
+//   AQM.push_back (aqm);
+//   nAQM++;
+// }
 
 void
 ScenarioImpl::DestroyTrace (EvaluationTopology et)
@@ -59,6 +62,7 @@ void
 ScenarioImpl::ConfigureQueueDisc (uint32_t limit, uint32_t pktsize, std::string linkbw, std::string linkdel, std::string mode)
 {
   Config::SetDefault ("ns3::PfifoFastQueueDisc::MaxSize", StringValue (std::to_string (limit) + "p"));
+  // Config::SetDefault ("ns3::FifoQueueDisc::MaxSize", StringValue (std::to_string (limit) + "p"));
 
   Config::SetDefault ("ns3::RedQueueDisc::MeanPktSize", UintegerValue (pktsize));
   Config::SetDefault ("ns3::RedQueueDisc::LinkBandwidth", StringValue (linkbw));
@@ -90,9 +94,12 @@ ScenarioImpl::ConfigureQueueDisc (uint32_t limit, uint32_t pktsize, std::string 
 void
 ScenarioImpl::RunSimulation (Time simtime, bool isBql)
 {
-  for (uint32_t i = 0; i < m_nAQM; i++)
+  std::cout << nAQM << std::endl;
+  for (uint32_t i = 0; i < nAQM; i++)
     {
-      EvaluationTopology et = CreateScenario (m_AQM[i], isBql);
+      std::string nextAQM = std::string ("ns3::") + AQM[i] + std::string ("QueueDisc"); // copy AQM[i] to a string and send it.
+      std::cout << nextAQM << std::endl;
+      EvaluationTopology et = CreateScenario (nextAQM, isBql);
       Simulator::Schedule (simtime, &ScenarioImpl::DestroyTrace, this, et);
       Simulator::Stop (simtime);
       Simulator::Run ();
